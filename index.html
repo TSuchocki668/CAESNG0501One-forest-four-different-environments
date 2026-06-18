@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>One Forest, Four Different Environments</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f7f3ea;
+    color: #12382f;
+  }
+
+  .figure {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 36px;
+    color: #063b2f;
+  }
+
+  .subtitle {
+    font-size: 20px;
+    font-style: italic;
+    margin: 6px 0 20px;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 24px;
+  }
+
+  .forest {
+    position: relative;
+    height: 680px;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.18);
+    background:
+      linear-gradient(to bottom,
+        rgba(255,232,90,0.35) 0%,
+        rgba(54,118,45,0.55) 24%,
+        rgba(30,91,50,0.75) 48%,
+        rgba(18,63,45,0.9) 73%,
+        rgba(55,36,22,0.96) 100%),
+      url("https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1400&q=80");
+    background-size: cover;
+    background-position: center;
+  }
+
+  .layer-band {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 25%;
+    border-bottom: 2px solid rgba(255,255,255,0.75);
+    cursor: pointer;
+    transition: background 0.25s, outline 0.25s;
+  }
+
+  .layer-band.active {
+    outline: 5px solid rgba(255, 220, 40, 0.9);
+    outline-offset: -5px;
+    background: rgba(255, 220, 40, 0.14);
+  }
+
+  .canopy { top: 0; }
+  .subcanopy { top: 25%; }
+  .shrub { top: 50%; }
+  .floor { top: 75%; }
+
+  .layer-label {
+    position: absolute;
+    left: 28px;
+    top: 26px;
+    color: white;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+  }
+
+  .layer-label h2 {
+    margin: 0 0 8px;
+    font-size: 28px;
+  }
+
+  .light {
+    font-size: 26px;
+    color: #ffe735;
+    font-weight: bold;
+  }
+
+  .height {
+    margin-top: 8px;
+    font-size: 17px;
+  }
+
+  .sunbeam {
+    position: absolute;
+    top: -30px;
+    left: 95px;
+    width: 58px;
+    height: 735px;
+    background: linear-gradient(to bottom,
+      rgba(255,236,71,0.95),
+      rgba(255,236,71,0.55),
+      rgba(255,236,71,0.15));
+    transform: rotate(-20deg);
+    transform-origin: top center;
+    clip-path: polygon(30% 0, 70% 0, 100% 90%, 50% 100%, 0 90%);
+    pointer-events: none;
+  }
+
+  .gradient-card {
+    position: absolute;
+    right: 18px;
+    top: 92px;
+    width: 150px;
+    height: 500px;
+    background: rgba(255,255,255,0.88);
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .gradient-card h3 {
+    margin: 0 0 14px;
+    font-size: 18px;
+  }
+
+  .gradients {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .grad {
+    height: 380px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    padding: 12px 4px;
+    font-weight: bold;
+  }
+
+  .temp {
+    background: linear-gradient(to bottom, #ffd75d, #f2a64a, #7fc4a2);
+    color: #743100;
+  }
+
+  .humid {
+    background: linear-gradient(to bottom, #e6f4ff, #9fd1eb, #2f87c5);
+    color: #034e87;
+  }
+
+  .panel {
+    background: #fffdf7;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+  }
+
+  .slider-box {
+    background: #063b2f;
+    color: white;
+    border-radius: 16px;
+    padding: 18px 18px 16px;
+    margin-bottom: 18px;
+  }
+
+  .slider-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .slider-title strong {
+    font-size: 21px;
+  }
+
+  .slider-title em {
+    color: #ffe735;
+    font-size: 15px;
+  }
+
+  input[type="range"] {
+    width: 100%;
+    accent-color: #9bd238;
+  }
+
+  .layer-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .tab {
+    background: transparent;
+    border: 0;
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 6px 2px;
+    border-bottom: 3px solid transparent;
+  }
+
+  .tab.active {
+    color: #b7f14d;
+    border-color: #b7f14d;
+  }
+
+  .info h2 {
+    margin: 0;
+    font-size: 34px;
+    color: #0b5b36;
+  }
+
+  .tagline {
+    font-size: 19px;
+    font-style: italic;
+    margin: 4px 0 18px;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+
+  .box {
+    background: #f5f1e7;
+    border: 1px solid #ddd2bd;
+    border-radius: 14px;
+    padding: 15px;
+  }
+
+  .box h3 {
+    margin: 0 0 10px;
+    color: #376a26;
+    font-size: 17px;
+  }
+
+  ul {
+    padding-left: 20px;
+    margin: 0;
+  }
+
+  li {
+    margin-bottom: 7px;
+  }
+
+  .organisms {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-size: 38px;
+  }
+
+  .organism-labels {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    font-size: 14px;
+    color: #333;
+    margin-top: 6px;
+  }
+
+  .leaf-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 34px;
+  }
+
+  .footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 18px;
+  }
+
+  .strategy {
+    background: #eef8ed;
+    border-left: 6px solid #4c8c3b;
+  }
+
+  .biomimicry {
+    background: #eef7fa;
+    border-left: 6px solid #2c89a0;
+  }
+
+  .caption {
+    margin-top: 14px;
+    font-size: 13px;
+    color: #4d4d4d;
+  }
+
+  @media (max-width: 900px) {
+    .layout, .footer {
+      grid-template-columns: 1fr;
+    }
+
+    .forest {
+      height: 600px;
+    }
+
+    h1 {
+      font-size: 30px;
+    }
+  }
+</style>
+</head>
+
+<body>
+<div class="figure">
+  <h1>One Forest, Four Different Environments</h1>
+  <div class="subtitle">Light, temperature, and humidity change from top to bottom. Life adapts.</div>
+
+  <div class="layout">
+    <div class="forest" aria-label="Forest layers diagram">
+      <div class="sunbeam"></div>
+
+      <div class="layer-band canopy active" data-layer="0">
+        <div class="layer-label">
+          <h2>CANOPY</h2>
+          <div class="light">80–100%</div>
+          <div>of full sunlight</div>
+          <div class="height">Height: 20–40 m</div>
+        </div>
+      </div>
+
+      <div class="layer-band subcanopy" data-layer="1">
+        <div class="layer-label">
+          <h2>SUBCANOPY</h2>
+          <div class="light">10–20%</div>
+          <div>of full sunlight</div>
+          <div class="height">Height: 8–20 m</div>
+        </div>
+      </div>
+
+      <div class="layer-band shrub" data-layer="2">
+        <div class="layer-label">
+          <h2>SHRUB LAYER</h2>
+          <div class="light">1–5%</div>
+          <div>of full sunlight</div>
+          <div class="height">Height: 1–8 m</div>
+        </div>
+      </div>
+
+      <div class="layer-band floor" data-layer="3">
+        <div class="layer-label">
+          <h2>FOREST FLOOR</h2>
+          <div class="light">1–5%</div>
+          <div>of full sunlight</div>
+          <div class="height">Height: 0–1 m</div>
+        </div>
+      </div>
+
+      <div class="gradient-card">
+        <h3>Environmental Gradient</h3>
+        <div class="gradients">
+          <div class="grad temp">
+            <span>Warmer</span>
+            <span>↓</span>
+            <span>Cooler</span>
+          </div>
+          <div class="grad humid">
+            <span>Drier</span>
+            <span>↓</span>
+            <span>More Humid</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="slider-box">
+        <div class="slider-title">
+          <strong>Explore Each Layer</strong>
+          <em>Drag the slider or click a layer</em>
+        </div>
+
+        <input id="layerSlider" type="range" min="0" max="3" step="1" value="0" />
+
+        <div class="layer-tabs">
+          <button class="tab active" data-layer="0">Canopy</button>
+          <button class="tab" data-layer="1">Subcanopy</button>
+          <button class="tab" data-layer="2">Shrub</button>
+          <button class="tab" data-layer="3">Forest Floor</button>
+        </div>
+      </div>
+
+      <div class="info">
+        <h2 id="layerName">CANOPY</h2>
+        <div class="tagline" id="layerTagline">Bright, windy, variable conditions.</div>
+
+        <div class="info-grid">
+          <div class="box">
+            <h3>Challenges</h3>
+            <ul id="challenges"></ul>
+          </div>
+
+          <div class="box">
+            <h3>Adaptations</h3>
+            <ul id="adaptations"></ul>
+          </div>
+
+          <div class="box">
+            <h3>Example Organisms</h3>
+            <div class="organisms" id="organismIcons"></div>
+            <div class="organism-labels" id="organismLabels"></div>
+          </div>
+
+          <div class="box">
+            <h3>Leaf Strategy</h3>
+            <div class="leaf-row" id="leafIcons"></div>
+            <p id="leafText"></p>
+          </div>
+        </div>
+
+        <div class="footer">
+          <div class="box strategy">
+            <h3>Nature’s Strategy</h3>
+            <p id="strategyText"></p>
+          </div>
+
+          <div class="box biomimicry">
+            <h3>Biomimicry Insight</h3>
+            <p id="bioText"></p>
+          </div>
+        </div>
+
+        <div class="caption">
+          Light ranges are simplified for student interpretation. Temperature and humidity vary by forest type, season, and time of day.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const layers = [
+  {
+    name: "CANOPY",
+    tagline: "Bright, windy, variable conditions.",
+    challenges: [
+      "Intense sunlight.",
+      "High wind exposure.",
+      "Drier air.",
+      "Large temperature swings."
+    ],
+    adaptations: [
+      "Small, thick leaves reduce water loss.",
+      "Waxy leaf surfaces shed water.",
+      "Flexible branches bend without breaking.",
+      "Height helps capture sunlight first."
+    ],
+    organisms: ["🐦", "🐿️", "🌿"],
+    organismLabels: ["Warbler", "Squirrel", "Epiphyte"],
+    leaves: "🍃 🍃",
+    leafText: "Leaves are often smaller, thicker, and angled or vertical to handle high light and reduce water loss.",
+    strategy: "The canopy captures most incoming light. Organisms here tolerate exposure while gaining first access to solar energy.",
+    bio: "Canopy design suggests layered solar capture, wind-responsive structures, and building skins that manage light and heat."
+  },
+  {
+    name: "SUBCANOPY",
+    tagline: "Filtered light, calmer air, and more stable conditions.",
+    challenges: [
+      "Reduced sunlight.",
+      "Competition with taller trees.",
+      "Limited wind movement.",
+      "More shaded growth conditions."
+    ],
+    adaptations: [
+      "Broader leaves capture filtered light.",
+      "Shade tolerance allows photosynthesis at lower light.",
+      "Thin leaves reduce material cost.",
+      "Flexible growth tracks openings in the canopy."
+    ],
+    organisms: ["🦉", "🦎", "🌳"],
+    organismLabels: ["Owl", "Salamander", "Small tree"],
+    leaves: "🍃 🍃 🍃",
+    leafText: "Leaves become broader and thinner, increasing surface area for light capture.",
+    strategy: "The subcanopy uses light that passes through the upper layer. It thrives through patience, tolerance, and efficient capture.",
+    bio: "This layer models low-energy design. Systems can perform well by using diffuse light and protected microclimates."
+  },
+  {
+    name: "SHRUB LAYER",
+    tagline: "Low light, high humidity, and dense competition.",
+    challenges: [
+      "Very low sunlight.",
+      "Crowded growing space.",
+      "High moisture.",
+      "Competition for nutrients and openings."
+    ],
+    adaptations: [
+      "Broad horizontal leaves intercept scattered light.",
+      "Rapid growth follows small light gaps.",
+      "Flexible stems grow around obstacles.",
+      "Flowers and berries attract animal partners."
+    ],
+    organisms: ["🐦", "🐇", "🌱"],
+    organismLabels: ["Thrush", "Rabbit", "Shrub"],
+    leaves: "🍃 🍃 🍃 🍃",
+    leafText: "Leaves are wider and often held horizontally to gather light from many angles.",
+    strategy: "The shrub layer shows how life uses crowded space by spreading, weaving, and responding quickly to openings.",
+    bio: "This layer can inspire dense planting systems, food forests, and habitat corridors that use vertical space efficiently."
+  },
+  {
+    name: "FOREST FLOOR",
+    tagline: "Dim, cool, humid, and rich in decomposition.",
+    challenges: [
+      "Very little sunlight reaches the ground.",
+      "Cooler temperatures.",
+      "High humidity.",
+      "Decomposition dominates nutrient cycling."
+    ],
+    adaptations: [
+      "Large thin leaves maximize photon capture.",
+      "Ferns and mosses tolerate shade.",
+      "Fungi digest fallen organic matter.",
+      "Soil organisms recycle nutrients."
+    ],
+    organisms: ["🍄", "🪱", "🌿"],
+    organismLabels: ["Fungus", "Millipede", "Fern"],
+    leaves: "🍃 🍃 🍃 🍃 🍃",
+    leafText: "Leaves are often large, thin, and horizontal. Every available photon matters.",
+    strategy: "The forest floor turns fallen material into future growth. Energy is low, but recycling is intense.",
+    bio: "This layer models circular design. Waste becomes input, and low-energy processes rebuild fertility."
+  }
+];
+
+const slider = document.getElementById("layerSlider");
+const tabs = document.querySelectorAll(".tab");
+const bands = document.querySelectorAll(".layer-band");
+
+function setLayer(index) {
+  const layer = layers[index];
+
+  slider.value = index;
+
+  document.getElementById("layerName").textContent = layer.name;
+  document.getElementById("layerTagline").textContent = layer.tagline;
+
+  fillList("challenges", layer.challenges);
+  fillList("adaptations", layer.adaptations);
+
+  document.getElementById("organismIcons").textContent = layer.organisms.join("  ");
+  document.getElementById("organismLabels").innerHTML =
+    layer.organismLabels.map(label => `<span>${label}</span>`).join("");
+
+  document.getElementById("leafIcons").textContent = layer.leaves;
+  document.getElementById("leafText").textContent = layer.leafText;
+  document.getElementById("strategyText").textContent = layer.strategy;
+  document.getElementById("bioText").textContent = layer.bio;
+
+  tabs.forEach(tab => tab.classList.toggle("active", Number(tab.dataset.layer) === index));
+  bands.forEach(band => band.classList.toggle("active", Number(band.dataset.layer) === index));
+}
+
+function fillList(id, items) {
+  const list = document.getElementById(id);
+  list.innerHTML = items.map(item => `<li>${item}</li>`).join("");
+}
+
+slider.addEventListener("input", event => {
+  setLayer(Number(event.target.value));
+});
+
+tabs.forEach(tab => {
+  tab.addEventListener("click", () => setLayer(Number(tab.dataset.layer)));
+});
+
+bands.forEach(band => {
+  band.addEventListener("click", () => setLayer(Number(band.dataset.layer)));
+});
+
+setLayer(0);
+</script>
+</body>
+</html>
