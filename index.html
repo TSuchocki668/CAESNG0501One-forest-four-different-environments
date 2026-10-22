@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>One Forest, Four Different Environments</title>
+<title>Life at Every Level</title>
 <style>
 * { box-sizing: border-box; }
 body { margin: 0; padding: 24px; font-family: Arial, Helvetica, sans-serif; background: #f7f3ea; color: #12382f; }
@@ -48,22 +48,35 @@ p { line-height: 1.5; }
 .panel { scroll-margin-top: 12px; }
 button:focus-visible, input:focus-visible { outline: 3px solid #ffcb48; outline-offset: 3px; }
 a { color: #185d76; }
-@media (max-width: 900px) { .layout { grid-template-columns: 1fr; } .band { min-height: 0; padding: 12px 14px; } }
-@media (max-width: 520px) { body { padding: 12px; } h1 { font-size: 23px; } .cards { grid-template-columns: 1fr; } .light { font-size: 16px; } .metric strong { font-size: 12px; } }
-@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .band { min-height: 0; padding: 12px 14px; }
+}
+@media (max-width: 520px) {
+  body { padding: 12px; }
+  h1 { font-size: 23px; }
+  .cards { grid-template-columns: 1fr; }
+  .light { font-size: 16px; }
+  .metric strong { font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; }
+}
 </style>
 </head>
 <body>
 <main class="figure">
-  <h1>One Forest, Four Different Environments</h1>
+  <h1>Life at Every Level</h1>
   <p class="subtitle">A northern hardwood forest on a summer day. Light, temperature, humidity, and wind change from top to bottom.</p>
   <p class="note">Follow the light downward. Shading creates different opportunities and challenges for life.</p>
   <p class="framing">A simplified view, not to scale. The layers grade into one another, and ecologists divide them in different ways. Conditions shift with weather, season, and canopy openings.</p>
+
   <div class="layout">
     <section class="forest" aria-label="Forest layers">
       <div id="bands"></div>
       <p class="scale">Not to scale</p>
     </section>
+
     <section class="panel" id="panel" aria-label="Explore a forest layer">
       <div class="controls">
         <label for="slider">Explore each layer</label>
@@ -71,81 +84,227 @@ a { color: #185d76; }
         <input type="range" id="slider" min="0" max="3" step="1" value="0">
         <div class="tabs" id="tabs"></div>
       </div>
+
       <div class="info" aria-live="polite">
         <h2 id="name"></h2>
         <p class="tagline" id="tagline"></p>
+
         <div class="cards">
-          <div class="card"><h3>Challenges</h3><ul id="challenges"></ul></div>
-          <div class="card"><h3>Adaptations</h3><ul id="adaptations"></ul></div>
-          <div class="card organisms"><h3>Example organisms</h3><ul id="organisms"></ul></div>
+          <div class="card">
+            <h3>Challenges</h3>
+            <ul id="challenges"></ul>
+          </div>
+          <div class="card">
+            <h3>Adaptations</h3>
+            <ul id="adaptations"></ul>
+          </div>
+          <div class="card organisms">
+            <h3>Example organisms</h3>
+            <ul id="organisms"></ul>
+          </div>
         </div>
-        <div class="design"><h3>Design question</h3><p id="question"></p></div>
+
+        <div class="design">
+          <h3>Design question</h3>
+          <p id="question"></p>
+        </div>
+
         <p class="animal-note">Animals move between layers.</p>
-        <p class="credit">Environmental Science through Nature's Genius · Conceptual Academy © 2026</p>
+        <p class="credit">Environmental Science through Nature's Genius</p>
       </div>
     </section>
   </div>
+
   <p class="caption">*Average summer readings from one study of sugar maple, yellow birch, and beech forests in Quebec. Near-floor readings were measured at 0.2 m.</p>
-  <p class="caption">Light values: <a href="https://doi.org/10.1111/j.0022-0477.2004.00869.x">Beaudet et al. 2004</a>. In one long-term Swiss study, daily highs under forest canopies averaged about 2 °C cooler than in nearby open ground, and up to 5 °C cooler. Conditions vary by forest type, season, and time of day. Temperature context: <a href="https://libra.unine.ch/entities/publication/9e54efed-5c5a-4025-bf98-88aeca20849e">von Arx et al. 2012</a>.</p>
+  <p class="caption">Conditions vary by forest type, season, and time of day.</p>
+
+  <!-- Light values: Beaudet et al. 2004, https://doi.org/10.1111/j.0022-0477.2004.00869.x -->
 </main>
+
 <script>
 const layers = [
-  { name: "Canopy", tagline: "Bright, windy, and exposed, with first access to sunlight.", light: "Full sun on the outer leaves", temp: "Most exposed to heat", humid: "Drier air", wind: "Most exposed",
-    challenges: ["Intense direct sunlight", "Wind exposure", "Rapid water loss on hot days"],
-    adaptations: ["Sun-exposed leaves are often thicker than shaded leaves of the same species", "Narrower, more upright leaves near the top shed heat", "Leaves in full sun carry higher photosynthetic capacity"],
-    organisms: ["Sugar maple, yellow birch, and American beech, whose crowns form the canopy of these forests", "Blackburnian warbler, which nests and sings high in the treetops", "Red-eyed vireo, which plucks caterpillars from leaves in the treetops"],
-    bio: "What could sun-exposed leaves teach designers about balancing light capture, cooling, and water conservation?" },
-  { name: "Subcanopy", tagline: "Filtered light and calmer air, where patience and efficiency replace exposure.", light: "Filtered light, bright gaps", temp: "More buffered", humid: "Moister air", wind: "Sheltered",
-    challenges: ["Much less light than the canopy above", "Competition for light from canopy gaps", "Slower growth in shade"],
-    adaptations: ["Broader, thinner leaves catch filtered and scattered light", "More chlorophyll per gram of leaf tissue", "Growth speeds up when a gap opens above"],
-    organisms: ["Young sugar maples and beeches, which can wait for years in shade until a gap opens", "Barred owl, which waits on a perch and scans for prey with sharp eyes and ears, mostly after dark"],
-    bio: "How could a building bring useful daylight indoors while reducing the need for electric lighting?" },
-  { name: "Shrub layer", tagline: "A shaded world where some plants grow slowly and others respond to new openings.", light: "About 5 to 11% of full sun at 5 m*", temp: "Cooler by day", humid: "Moister air", wind: "Reduced",
-    challenges: ["Deep shade most of the day", "Crowded growing space", "Light often arrives in brief sunflecks"],
-    adaptations: ["Nearly horizontal leaves intercept light arriving from above", "Shade-tolerant seedlings survive years of slow growth", "Flowers attract pollinators, while fruits attract animals that disperse seeds"],
-    organisms: ["Hobblebush, a shade-tolerant shrub common in these forests", "Yellow birch seedlings, which need openings in the canopy to get established"],
-    bio: "How could a food forest arrange plants with different light needs in the same space?" },
-  { name: "Forest floor", tagline: "Deep shade, where fallen leaves and wood feed much of the life below.", light: "About 1 to 4% of full sun*", temp: "Cool and shaded", humid: "Moist air near the ground", wind: "Calmest",
-    challenges: ["Shade from every layer above", "Moisture varies with weather and shelter", "Brief sunflecks bring the brightest light"],
-    adaptations: ["Wide, flat fronds held nearly horizontal intercept light from above", "Shade-tolerant plants keep photosynthesizing in low light", "Fungi and decomposers turn fallen matter into nutrients", "Many animals shelter in moist places beneath litter, rocks, or logs"],
-    organisms: ["Lungless salamanders (<i>Plethodon</i>), which breathe through moist skin and the lining of the mouth, sheltering where they won’t dry out", "Wood thrush, which hops through leaf litter probing for insects", "Millipedes and sowbugs, which break down leaf litter", "Wood ferns, trillium, wood sorrel, and clubmoss, common low plants of these forests"],
-    bio: "How could designers make discarded materials useful inputs for something new?" }
+  {
+    name: "Canopy",
+    tagline: "Bright, windy, and exposed, with first access to sunlight.",
+    light: "Full sun on the outer leaves",
+    temp: "Most exposed to heat",
+    humid: "Drier air",
+    wind: "Most exposed",
+    challenges: [
+      "Intense direct sunlight",
+      "Wind exposure",
+      "Rapid water loss on hot days"
+    ],
+    adaptations: [
+      "Sun-exposed leaves are often thicker than shaded leaves of the same species",
+      "Narrower, more upright leaves near the top shed heat",
+      "Leaves in full sun carry higher photosynthetic capacity"
+    ],
+    organisms: [
+      "Sugar maple, yellow birch, and American beech, whose crowns form the canopy of these forests",
+      "Blackburnian warbler, which nests and sings high in the treetops",
+      "Red-eyed vireo, which plucks caterpillars from leaves in the treetops"
+    ],
+    bio: "What could sun-exposed leaves teach designers about balancing light capture, cooling, and water conservation?"
+  },
+  {
+    name: "Subcanopy",
+    tagline: "Filtered light and calmer air, where patience and efficiency replace exposure.",
+    light: "Filtered light, bright gaps",
+    temp: "More buffered",
+    humid: "Moister air",
+    wind: "Sheltered",
+    challenges: [
+      "Much less light than the canopy above",
+      "Competition for light from canopy gaps",
+      "Slower growth in shade"
+    ],
+    adaptations: [
+      "Broader, thinner leaves catch filtered and scattered light",
+      "More chlorophyll per gram of leaf tissue",
+      "Growth speeds up when a gap opens above"
+    ],
+    organisms: [
+      "Young sugar maples and beeches, which can wait for years in shade until a gap opens",
+      "Barred owl, which waits on a perch and scans for prey with sharp eyes and ears, mostly after dark"
+    ],
+    bio: "How could a building bring useful daylight indoors while reducing the need for electric lighting?"
+  },
+  {
+    name: "Shrub layer",
+    tagline: "A shaded world where some plants grow slowly and others respond to new openings.",
+    light: "About 5 to 11% of the light above the canopy at 5 m*",
+    temp: "Cooler by day",
+    humid: "Moister air",
+    wind: "Reduced",
+    challenges: [
+      "Deep shade most of the day",
+      "Crowded growing space",
+      "Light often arrives in brief sunflecks"
+    ],
+    adaptations: [
+      "Nearly horizontal leaves intercept light arriving from above",
+      "Shade-tolerant seedlings survive years of slow growth",
+      "Flowers attract pollinators, while fruits attract animals that disperse seeds"
+    ],
+    organisms: [
+      "Hobblebush, a shade-tolerant shrub common in these forests",
+      "Yellow birch seedlings, which need openings in the canopy to get established"
+    ],
+    bio: "How could a food forest arrange plants with different light needs in the same space?"
+  },
+  {
+    name: "Forest floor",
+    tagline: "Deep shade, where fallen leaves and wood feed much of the life below.",
+    light: "About 1 to 4% of the light above the canopy*",
+    temp: "Cool and shaded",
+    humid: "Moist air near the ground",
+    wind: "Calmest",
+    challenges: [
+      "Shade from every layer above",
+      "Moisture varies with weather and shelter",
+      "Brief sunflecks bring the brightest light"
+    ],
+    adaptations: [
+      "Wide, flat fronds held nearly horizontal intercept light from above",
+      "Shade-tolerant plants keep photosynthesizing in low light",
+      "Fungi and decomposers turn fallen matter into nutrients"
+    ],
+    organisms: [
+      "Lungless salamanders (<i>Plethodon</i>), which need moist shelter beneath litter, rocks, or logs",
+      "Wood thrush, which hops through leaf litter probing for insects",
+      "Millipedes and sowbugs, which break down leaf litter",
+      "Wood ferns, trillium, wood sorrel, and clubmoss, common low plants of these forests"
+    ],
+    bio: "How could designers make discarded materials useful inputs for something new?"
+  }
 ];
+
 const byId = id => document.getElementById(id);
+
 byId("bands").innerHTML = layers.map((layer, i) => `
-  <button type="button" class="band" data-layer="${i}" aria-pressed="false" aria-controls="panel">
-    <span class="label"><span class="band-name">${layer.name}</span><span class="light">${layer.light}</span></span>
-    <span class="metrics">
-      ${[["Temperature", layer.temp], ["Humidity", layer.humid], ["Wind", layer.wind]].map(([label, value]) =>
-        `<span class="metric"><span>${label}</span><strong>${value}</strong></span>`).join("")}
+  <button
+    type="button"
+    class="band"
+    data-layer="${i}"
+    aria-pressed="false"
+    aria-controls="panel"
+  >
+    <span class="label">
+      <span class="band-name">${layer.name}</span>
+      <span class="light">${layer.light}</span>
     </span>
-  </button>`).join("");
-byId("tabs").innerHTML = layers.map((layer, i) =>
-  `<button type="button" class="tab" data-layer="${i}" aria-pressed="false">${layer.name}</button>`).join("");
+    <span class="metrics">
+      ${[
+        ["Temperature", layer.temp],
+        ["Humidity", layer.humid],
+        ["Wind", layer.wind]
+      ].map(([label, value]) => `
+        <span class="metric">
+          <span>${label}</span>
+          <strong>${value}</strong>
+        </span>
+      `).join("")}
+    </span>
+  </button>
+`).join("");
+
+byId("tabs").innerHTML = layers.map((layer, i) => `
+  <button
+    type="button"
+    class="tab"
+    data-layer="${i}"
+    aria-pressed="false"
+  >${layer.name}</button>
+`).join("");
+
 function setLayer(i, reveal = false) {
   const layer = layers[i];
+
   document.querySelectorAll("[data-layer]").forEach(button => {
     const active = Number(button.dataset.layer) === i;
     button.classList.toggle("active", active);
     button.setAttribute("aria-pressed", String(active));
   });
+
   byId("slider").value = i;
   byId("slider").setAttribute("aria-valuetext", layer.name);
   byId("name").textContent = layer.name;
   byId("tagline").textContent = layer.tagline;
+
   for (const key of ["challenges", "adaptations", "organisms"]) {
-    byId(key).innerHTML = layer[key].map(text => `<li>${text}</li>`).join("");
+    byId(key).innerHTML = layer[key]
+      .map(text => `<li>${text}</li>`)
+      .join("");
   }
+
   byId("question").textContent = layer.bio;
+
   if (reveal && window.matchMedia("(max-width:900px)").matches) {
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion:reduce)").matches;
-    byId("panel").scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion:reduce)"
+    ).matches;
+
+    byId("panel").scrollIntoView({
+      behavior: reducedMotion ? "auto" : "smooth",
+      block: "start"
+    });
   }
 }
+
 document.querySelectorAll("[data-layer]").forEach(button => {
-  button.addEventListener("click", () => setLayer(Number(button.dataset.layer), button.classList.contains("band")));
+  button.addEventListener("click", () => {
+    setLayer(
+      Number(button.dataset.layer),
+      button.classList.contains("band")
+    );
+  });
 });
-byId("slider").addEventListener("input", event => setLayer(Number(event.target.value)));
+
+byId("slider").addEventListener("input", event => {
+  setLayer(Number(event.target.value));
+});
+
 setLayer(0);
 </script>
 </body>
